@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investmentak IOS - اللوحة التشغيلية الذكية</title>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: #f0f2f5; padding: 15px; direction: rtl; text-align: right; margin: 0; }
+        .container { max-width: 720px; margin: 20px auto; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { color: #1e3a8a; font-size: 22px; margin-bottom: 5px; text-align: center; }
+        p.sub { color: #4b5563; font-size: 13px; text-align: center; margin-bottom: 20px; }
+        .status-badge { display: block; text-align: center; background: #dcfce7; color: #15803d; font-size: 12px; font-weight: bold; padding: 8px; border-radius: 20px; margin-bottom: 20px; border: 1px solid #bbf7d0; }
+        .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: #f3f4f6; color: #374151; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 14px; text-align: center; }
+        .tab-btn.active { background: #2563eb; color: white; }
+        label { font-weight: bold; display: block; margin-top: 15px; margin-bottom: 6px; color: #1f2937; font-size: 14px; }
+        select, textarea, input { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; box-sizing: border-box; font-size: 14px; margin-bottom: 10px; font-family: inherit; }
+        button.action-btn { background-color: #2563eb; color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 15px; transition: 0.2s; }
+        button.action-btn:hover { background-color: #1d4ed8; }
+        .result-box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 20px; border-radius: 10px; margin-top: 20px; white-space: pre-wrap; font-size: 14px; color: #0f172a; line-height: 1.8; display: none; }
+        .badge { display: inline-block; background: #e0e7ff; color: #3730a3; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Investmentak IOS v1.1</h1>
+        <p class="sub">نظام التشغيل الذكي - المحرك التنفيذي للمحتوى والاستشارات</p>
+        
+        <div class="status-badge">🟢 متصل بالدستور (IOS Foundation & Llama 3.3 Engine)</div>
+
+        <div class="nav-tabs">
+            <button type="button" id="tab_qa" class="tab-btn active" onclick="switchTab('qa')">💬 المساعد والاستشارات</button>
+            <button type="button" id="tab_ad" class="tab-btn" onclick="switchTab('ad')">📢 صانع المحتوى (تسلسل IOS)</button>
+        </div>
+
+        <!-- قسم الأسئلة والاستفسارات -->
+        <div id="qa_section">
+            <label>سؤال العميل / استفسار المشروع:</label>
+            <textarea id="user_question" rows="4" placeholder="اكتب الاستفسار هنا... سيتم الرد بناءً على معايير وقواعد IOS"></textarea>
+        </div>
+
+        <!-- قسم صانع الإعلانات والمحتوى -->
+        <div id="ad_section" style="display: none;">
+            <label>اختر قالب المحتوى (طبقاً لـ Content Subsystem):</label>
+            <select id="ad_type">
+                <option value="منشور منشور فيسبوك هادف ومبني على التسلسل: Reality -> Evidence -> Education -> Offer -> CTA">منشور فيسبوك متكامل (تسلسل IOS)</option>
+                <option value="إعلان لورش تصنيع الصابون والمنظفات يبرز القيمة الفنية وحاسبة الأرباح بـ Hook واحد و CTA واحد">إعلان ورش الصابون (مع الباحث أبكر)</option>
+                <option value="إعلان لمشروع الأكياس البلاستيكية يركز على دليل التوزيع 5×5 واستيراد الصين">إعلان مشاريع الأكياس البلاستيكية</option>
+                <option value="سكريبت فيديو قصير (تيك توك / ريلز) مدته 30 ثانية يعتمد على خطف الانتباه بالواقع والدليل">سكريبت فيديو قصير (IOS Script)</option>
+                <option value="رسالة واتساب ترويجية مباشرة ومركزة تعتمد على إثبات ودعوة واحدة للتواصل">رسالة واتساب ترويجية موجهة</option>
+            </select>
+
+            <label>إدخال بيانات خام / أدلة خاصة بالمنشور (Evidence Inputs):</label>
+            <input type="text" id="ad_extra" placeholder="مثال: قصة نجاح عميل، رقم الدفعة 17، نتائج حاسبة الأرباح...">
+        </div>
+
+        <button type="button" class="action-btn" onclick="generateAI()">✨ توليد المخرج طبقاً لدستور IOS</button>
+
+        <div id="result_container" class="result-box">
+            <span class="badge">المخرج المعتمد طبقاً لـ Investmentak IOS:</span><br>
+            <div id="result_text"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = "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";
+        window.currentMode = 'qa';
+
+        function switchTab(mode) {
+            document.getElementById('qa_section').style.display = mode === 'qa' ? 'block' : 'none';
+            document.getElementById('ad_section').style.display = mode === 'ad' ? 'block' : 'none';
+            document.getElementById('tab_qa').className = 'tab-btn ' + (mode === 'qa' ? 'active' : '');
+            document.getElementById('tab_ad').className = 'tab-btn ' + (mode === 'ad' ? 'active' : '');
+            window.currentMode = mode;
+        }
+
+        // دستور وقواعد Investmentak IOS v1.1 المدمجة
+        const iosSystemInstruction = `
+أنت جزء تنفيذي حاسم من نظام تشغيل إستثمارك (Investmentak IOS v1.1).
+وظيفتك توليد ردود ومحتوى ملتزم صارماً بـ Foundation والقواعد الذهبية للنظام:
+
+[1. القواعد الذهبية الحاكمة - Golden Rules]:
+- Hook واحد فقط مشوق ومباشر في البداية.
+- CTA واحد فقط صريح ومباشر في النهاية.
+- يمنع منعاً باتاً إعطاء وعود خيالية أو أرقام أرباح غير منطقية.
+- قاعدة الدليل أولاً (Evidence First Rule): أي ادعاء أو نصيحة يجب أن تسند بدليل واقعي من مشاريع أو خدمات إستثمارك.
+
+[2. تسلسل بناء المحتوى الإجباري (Content Sequence)]:
+أي قطعة محتوى يتم إنتاجها يجب أن تتبع التسلسل التالي بالتجهيز:
+1. Reality (الواقع): تسليط الضوء على مشكلة حقيقية من واقع السوق أو المستثمر الصغير.
+2. Evidence (الدليل): تقديم إثبات عملي (تجربة حية، ورش تدريبية، دراسة جدوى).
+3. Education (التعليم): إضافة قيمة أو معلومة عملية يستفيد منها القارئ فوراً.
+4. Offer (العرض): تقديم حل إستثمارك المباشر.
+5. CTA (الدعوة للإجراء): التوجيه للتواصل المباشر.
+
+[3. البنية المعرفية الحاكمة (Knowledge Architecture Summary)]:
+- العلامة: إستثمارك للحلول الاستثمارية الذكية.
+- المؤسس والخبير: عصام عبادي (مستشار إدارة المشاريع الاستثمارية والتسويق الذكي).
+- قطاع الصابون والمنظفات: الشق الفني بالتنسيق مع (الباحث: أبكر آدم إبراهيم - باحث كيميائي بكليات جامعة بخت الرضا). مع الاعتماد على تطبيق (ضاعف أرباحك) لحساب التكاليف والأرباح.
+- قطاع البلاستيك والتوريد: اعتماد خطوط الإنتاج ودليل التوزيع الذكي (5×5) وتوريد المكائن من الصين.
+- التواصل الرسمي والوحيد: الواتساب/الهاتف: +249962411479 | البريد: isamamin@gmail.com
+
+[4. التوقيع الإجباري لكل المخرجات]:
+عصام عبادي - إستثمارك للحلول الاستثمارية الذكية
+واتساب/هاتف: +249962411479 | بريد: isamamin@gmail.com
+`;
+
+        async function generateAI() {
+            const resultBox = document.getElementById('result_container');
+            const resultText = document.getElementById('result_text');
+            
+            resultBox.style.display = 'block';
+            resultText.innerText = 'جاري معالجة الطلب طبقاً لمفاهيم وقواعد Investmentak IOS... ⏳';
+
+            let prompt = '';
+
+            if (window.currentMode === 'qa') {
+                const q = document.getElementById('user_question').value.trim();
+                if (!q) {
+                    resultText.innerText = 'الرجاء كتابة السؤال أو استفسار العميل أولاً.';
+                    return;
+                }
+                prompt = `استفسار العميل: ${q}\nأجب بأسلوب استشاري موثوق يلتزم بقواعد النظام والدليل الواقعي دون وعود خيالية.`;
+            } else {
+                const adType = document.getElementById('ad_type').value;
+                const adExtra = document.getElementById('ad_extra').value.trim();
+                prompt = `المطلوب: ${adType}`;
+                if (adExtra) {
+                    prompt += `\nبيانات وأدلة إضافية من المستخدم: ${adExtra}`;
+                }
+                prompt += `\nالتزم بتطبيق تسلسل المحتوى الخماسي (Reality -> Evidence -> Education -> Offer -> CTA) والقواعد الذهبية لـ IOS.`;
+            }
+
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [
+                            { role: "system", content: iosSystemInstruction },
+                            { role: "user", content: prompt }
+                        ],
+                        temperature: 0.5,
+                        max_tokens: 1200
+                    })
+                });
+
+                const data = await response.json();
+                if (data.choices && data.choices.length > 0) {
+                    resultText.innerText = data.choices[0].message.content;
+                } else {
+                    resultText.innerText = 'حدث خطأ في استجابة المحرك: ' + (data.error?.message || 'يرجى التأكد من الاتصال بالإنترنت.');
+                }
+            } catch (error) {
+                resultText.innerText = 'حدث خطأ أثناء الاتصال: ' + error;
+            }
+        }
+    </script>
+</body>
+</html>
